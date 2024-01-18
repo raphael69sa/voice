@@ -1,0 +1,42 @@
+name: Transcribe Audio
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x  # Specify your desired Python version
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt  # If you have a requirements.txt file with your dependencies
+      working-directory: https://github.com/raphael69sa/voice
+
+    - name: Run Python script
+      run: python your_script.py  # Replace with the actual name of your Python script
+      working-directory: https://github.com/raphael69sa/voice
+
+    - name: Upload transcriptions to S3
+      run: |
+        aws configure set aws_access_key_id ${{ AKIA34NPKEVSV6GJUK4F }}
+        aws configure set aws_secret_access_key ${{ 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 }}
+        aws s3 cp Transcribed/ s3://decipher/Transcribed/ --recursive
+      env:
+        AWS_DEFAULT_REGION: us-east-1  # Replace with your desired AWS region
+      working-directory: https://github.com/raphael69sa/voice
+
+    - name: Cleanup
+      run: |
+        rm -rf /tmp/*
+      working-directory: https://github.com/raphael69sa/voice
